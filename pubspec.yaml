@@ -31,6 +31,8 @@ dependencies:
 #  firebase_dynamic_links: any
   # Add the dependency for the Firebase Core Flutter SDK
   camera: ^0.9.4+5
+  path: any
+  image_picker: ^0.8.4+4
   equatable: ^2.0.3
   bloc: ^7.0.1
   flutter_bloc: ^7.0.1

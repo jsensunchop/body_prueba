@@ -1,13 +1,18 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:prueba_tecnica/domain/bloc/publications_bloc/publication_bloc.dart';
 import 'package:prueba_tecnica/utils/firebase_auth.dart';
 import 'package:prueba_tecnica/views/details_page.dart';
 import 'package:prueba_tecnica/views/login_page.dart';
-import 'package:prueba_tecnica/views/tst_page.dart';
 
 class ProfilePage extends StatefulWidget {
+  // Obtain a list of the available cameras on the device.
+
   final User user;
 
   const ProfilePage({required this.user});
@@ -19,8 +24,21 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   bool _isSendingVerification = false;
   bool _isSigningOut = false;
+  File? image;
+
 
   late User _currentUser;
+
+  Future pickImage() async{
+    final image = await ImagePicker().pickImage(source: ImageSource.camera);
+    if(image == null) return;
+
+    final imageTemporary = File(image.path);
+    setState(() {
+      this.image = imageTemporary;
+    });
+
+  }
 
   @override
   void initState() {
@@ -55,14 +73,24 @@ class _ProfilePageState extends State<ProfilePage> {
         body: TabBarView(
           children: [
             Center(
-                child: OutlinedButton(
-                  onPressed: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) =>CameraExampleHome()));
-                  },
-                  child: Text(
-                      "Take a picture"
-                  ),
+                child:
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
 
+                    OutlinedButton(
+                      onPressed: (){
+                          pickImage();
+                      },
+                      child: Text(
+                          "Take a picture"
+                      ),
+
+                    ),
+
+                    image != null?
+                    Image.file(image!, width: 200, height: 400,) :Text("No picture taken")
+                  ],
                 )
             ),
             Column(
